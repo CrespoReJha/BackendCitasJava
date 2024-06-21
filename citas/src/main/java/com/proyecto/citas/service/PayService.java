@@ -3,6 +3,7 @@ package com.proyecto.citas.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,20 @@ public class PayService {
 
     public Pay save(Pay pay) {
         return payRepository.save(pay);
+    }
+
+    public Pay update(Long id, Pay pay) {
+        Optional<Pay> existingPayOptional = payRepository.findById(id);
+        if (existingPayOptional.isPresent()) {
+            Pay existingPay = existingPayOptional.get();
+            existingPay.setType(pay.getType());
+            existingPay.setAmount(pay.getAmount());
+            existingPay.setDate(pay.getDate());
+            existingPay.setPatient(pay.getPatient());
+            return payRepository.save(existingPay);
+        } else {
+            throw new RuntimeException("Pay not found with id " + id);
+        }
     }
 
     public boolean delete(Long id) {

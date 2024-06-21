@@ -32,6 +32,22 @@ public class PayController {
         return new ResponseEntity<>(createdPay, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Pay> updatePay(@PathVariable Long id, @RequestBody Pay pay) {
+        Pay updatedPay = payService.update(id, pay);
+        return new ResponseEntity<>(updatedPay, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePay(@PathVariable Long id) {
+        boolean deleted = payService.delete(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/patient/{patientId}/period")
     public List<Pay> getPaymentsForPatientInPeriod(@PathVariable Long patientId,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
@@ -40,5 +56,4 @@ public class PayController {
         patient.setId(patientId);
         return payService.getPaymentsForPatientInPeriod(patient, startDate, endDate);
     }
-
 }
